@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable prettier/prettier */
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Role, ExperienceLevel } from '@prisma/client';
 
 export class CreateCandidateDto {
   @ApiProperty({ example: 'John Doe' })
   @IsString()
-  @IsNotEmpty({ message: 'O nome é obrigatório' })
+  @IsNotEmpty({ message: 'Full name is required' })
   fullName: string;
 
   @ApiProperty({ example: 'joedoe@tech.com' })
-  @IsEmail({}, { message: 'E-mail inválido' })
+  @IsEmail({}, { message: 'Invalid e-mail' })
   email: string;
 
   @ApiProperty({ example: '11999999999' })
@@ -23,13 +22,19 @@ export class CreateCandidateDto {
   @IsOptional()
   linkedInUrl?: string;
 
-  @ApiProperty({ example: 'Backend' })
-  @IsString()
+  @ApiProperty({ 
+    example: 'BACKEND', 
+    enum: Role 
+  })
+  @IsEnum(Role, { message: 'Invalid role. Choose from: BACKEND, FRONTEND, FULLSTACK, etc.' })
   @IsNotEmpty()
-  role: string;
+  role: Role;
 
-  @ApiProperty({ example: 'Pleno' })
-  @IsString()
+  @ApiProperty({ 
+    example: 'MID_LEVEL', 
+    enum: ExperienceLevel 
+  })
+  @IsEnum(ExperienceLevel, { message: 'Invalid level. Choose from: JUNIOR, MID_LEVEL, SENIOR' })
   @IsNotEmpty()
-  experienceLevel: string;
+  experienceLevel: ExperienceLevel;
 }

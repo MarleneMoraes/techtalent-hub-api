@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateCandidateDto } from './dto/create-candidate.dto';
 import { UpdateCandidateDto } from './dto/update-candidate.dto';
 
 @Injectable()
 export class CandidatesService {
-  create(createCandidateDto: CreateCandidateDto) {
-    return 'This action adds a new candidate';
+  constructor(private readonly prisma: PrismaService) {}
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async create(createCandidateDto: CreateCandidateDto) {
+    return this.prisma.candidate.create({
+      data: createCandidateDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all candidates`;
+  async findAll() {
+    return this.prisma.candidate.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} candidate`;
+  async findOne(id: string) {
+    const candidate = await this.prisma.candidate.findUnique({
+      where: { id },
+    });
+
+    if (!candidate) {
+      throw new NotFoundException(`Candidate with ID "${id}" not found`);
+    }
+
+    return candidate;
   }
 
-  update(id: number, updateCandidateDto: UpdateCandidateDto) {
-    return `This action updates a #${id} candidate`;
+  async update(id: string, updateCandidateDto: UpdateCandidateDto) {
+    await this.findOne(id);
+
+    return this.prisma.candidate.update({
+      where: { id },
+      data: updateCandidateDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} candidate`;
+  async remove(id: string) {
+    await this.findOne(id);
+
+    return this.prisma.candidate.delete({
+      where: { id },
+    });
   }
 }
