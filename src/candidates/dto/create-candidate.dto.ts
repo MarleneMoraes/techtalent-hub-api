@@ -1,3 +1,4 @@
+// eslint-disable-next-line prettier/prettier
 import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role, ExperienceLevel } from '@prisma/client';
@@ -22,19 +23,23 @@ export class CreateCandidateDto {
   @IsOptional()
   linkedInUrl?: string;
 
-  @ApiProperty({ 
-    example: 'BACKEND', 
-    enum: Role 
+  @ApiProperty({
+    example: 'BACKEND',
+    enum: Role,
   })
-  @IsEnum(Role, { message: 'Invalid role. Choose from: BACKEND, FRONTEND, FULLSTACK, etc.' })
+  @IsEnum(Role, {
+    message: 'Invalid role. Choose from: BACKEND, FRONTEND, FULLSTACK, etc.',
+  })
   @IsNotEmpty()
   role: Role;
 
-  @ApiProperty({ 
-    example: 'MID_LEVEL', 
-    enum: ExperienceLevel 
+  @ApiProperty({
+    example: 'MID_LEVEL',
+    enum: ExperienceLevel,
   })
-  @IsEnum(ExperienceLevel, { message: 'Invalid level. Choose from: JUNIOR, MID_LEVEL, SENIOR' })
+  @IsEnum(ExperienceLevel, {
+    message: 'Invalid level. Choose from: JUNIOR, MID_LEVEL, SENIOR',
+  })
   @IsNotEmpty()
   experienceLevel: ExperienceLevel;
 }
